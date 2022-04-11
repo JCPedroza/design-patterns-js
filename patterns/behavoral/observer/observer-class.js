@@ -3,37 +3,33 @@
  */
 class Subject {
   constructor () {
-    this.notifications = 0;
+    this._notifyCount = 0;
     this._observers = new Set();
   }
 
   /**
    * Add observer to the observers collection.
-   * @param {Object} obs Observer to add.
-   * @returns {Object} Reference to self.
+   * @param {object} obs Observer to add.
    */
-  attach (obs) {
-    this._observers.add(obs);
-    return this;
-  }
+  attach (obs) { this._observers.add(obs); }
 
   /**
    * Remove observer from the observers collection.
-   * @param {Object} obs Observer to remove.
-   * @returns {Object} Reference to self.
+   * @param {object} obs Observer to remove.
    */
-  detach (obs) {
-    this._observers.delete(obs);
-    return this;
-  }
+  detach (obs) { this._observers.delete(obs); }
+
+  /**
+   * Get the total number of sent notifications.
+   * @returns {number} Total number of sent notifications.
+   */
+  getNotifyCount () { return this._notifyCount; }
 
   /**
    * Get the number of current observers.
    * @returns {number} Size of the observers collection.
    */
-  get aggregateCount () {
-    return this._observers.size;
-  }
+  getObserversSize () { return this._observers.size; }
 
   /**
    * Notify all observers.
@@ -41,7 +37,7 @@ class Subject {
   _notify (state) {
     for (const obs of this._observers) {
       obs.update(state);
-      this.notifications++;
+      this._notifyCount++;
     }
   }
 }
@@ -52,31 +48,27 @@ class Subject {
 class Switch extends Subject {
   constructor () {
     super();
-    this._switch = false;
+    this._isOn = false;
   }
 
   /**
-   * Negates the switch value.
-   * @returns {Object} Reference to self.
+   * Negates the switch value and notifies observers.
    */
-  toggleSwitch () {
-    this._switch = !this._switch;
-    this._notify(this.switch);
-    return this;
+  toggle () {
+    this._isOn = !this._isOn;
+    this._notify(this._isOn);
   }
 
   /**
    * Get switch value.
    * @returns {boolean} True if switch is on, false otherwise.
    */
-  get switch () {
-    return this._switch;
-  }
+  getIsOn () { return this._isOn; }
 }
 
 /**
  * Factory for Switch.
- * @returns {Object} A new switch instance.
+ * @returns {object} A new switch instance.
  */
 const createSwitch = () => new Switch();
 
@@ -85,15 +77,19 @@ const createSwitch = () => new Switch();
  */
 class Observer {
   constructor () {
-    this.updates = 0;
+    this._updateCount = 0;
   }
 
   /**
    * Increase the updates counter by one.
    */
-  update () {
-    this.updates++;
-  }
+  update () { this._updateCount++; }
+
+  /**
+   * Get the total number of updates received.
+   * @returns {number} Total number of updates received.
+   */
+  getUpdateCount () { return this._updateCount; }
 }
 
 /**
@@ -118,19 +114,17 @@ class Lightbulb extends Observer {
    * Get isOn value.
    * @returns {boolean} True if bulb is on, false otherwise.
    */
-  get isOn () {
-    return this._isOn;
-  }
+  getIsOn () { return this._isOn; }
 }
 
 /**
  * Factory for Lightbulb.
- * @returns {Object} A new Lightbulb instance.
+ * @returns {object} A new Lightbulb instance.
  */
 const createLightbulb = () => new Lightbulb();
 
 module.exports = {
   createSwitch,
   createLightbulb,
-  id: 'subject class with observers set and class inheritance'
+  id: 'class inheritance'
 };
